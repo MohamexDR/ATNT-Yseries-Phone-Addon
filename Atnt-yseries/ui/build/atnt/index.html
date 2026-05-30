@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATNT</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #006edc;
+      --blue-deep: #064aa8;
+      --aqua: #00a3b5;
+      --ink: #111827;
+      --muted: #64748b;
+      --line: rgba(15, 23, 42, 0.12);
+      --soft: #eef6ff;
+      --surface: #ffffff;
+      --ok: #0f9f6e;
+      --warn: #c2410c;
+      --shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: transparent;
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      height: 100%;
+      min-height: 0;
+      background:
+        radial-gradient(circle at 84% -10%, rgba(0, 110, 220, 0.18), transparent 30%),
+        linear-gradient(180deg, #f7fbff 0%, #ffffff 42%, #f4f8fd 100%);
+      padding: 18px 16px 28px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .app::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--aqua));
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 10px 24px rgba(0, 88, 184, 0.24);
+      flex: 0 0 auto;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 9px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--ok);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 42%),
+        linear-gradient(135deg, var(--blue) 0%, var(--blue-deep) 74%, var(--aqua) 100%);
+      color: #fff;
+      padding: 18px;
+      box-shadow: 0 18px 38px rgba(5, 81, 171, 0.24);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -38px;
+      top: -42px;
+      width: 150px;
+      height: 150px;
+      border-radius: 999px;
+      border: 24px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .metrics {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .metric span {
+      display: block;
+      margin-bottom: 6px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .hero-footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 18px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .phone-number {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      border: 0;
+      border-radius: 999px;
+      padding: 4px 5px 4px 10px;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+
+    .knob {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    .section {
+      margin-top: 18px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .plans {
+      display: grid;
+      gap: 10px;
+    }
+
+    .plan,
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .plan {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+    }
+
+    .plan h3 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .plan p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .price {
+      margin-top: 8px;
+      color: var(--blue-deep);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .primary,
+    .ghost {
+      min-height: 36px;
+      border-radius: 8px;
+      padding: 0 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .primary {
+      border: 0;
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .ghost {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--blue-deep);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: 0.64;
+    }
+
+    .panel {
+      padding: 13px;
+    }
+
+    .preset-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .field span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .customer-tools {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 2px 0 10px;
+    }
+
+    .customer-tools span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .customer-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .customer {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 8px 10px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .customer strong,
+    .customer span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .customer strong {
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .customer span {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .customer-empty {
+      min-height: 38px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .charge-group {
+      display: grid;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+
+    .charge-group + .charge-group {
+      margin-top: 12px;
+    }
+
+    .charge-group header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    input {
+      min-width: 0;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 11px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: rgba(0, 110, 220, 0.64);
+      box-shadow: 0 0 0 3px rgba(0, 110, 220, 0.12);
+    }
+
+    .notice {
+      margin-top: 12px;
+      min-height: 36px;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: var(--soft);
+      color: var(--blue-deep);
+      font-size: 12px;
+      line-height: 1.35;
+      display: none;
+      box-shadow: var(--shadow);
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    .notice.error {
+      background: #fff3ed;
+      color: var(--warn);
+    }
+
+    .passive {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      padding: 0 9px;
+      background: var(--soft);
+      color: var(--blue-deep);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .rates {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .rate {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .rate strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+
+    .rate span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .loading {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    @media (max-width: 340px) {
+      .app {
+        padding-inline: 12px;
+      }
+
+      .metrics,
+      .rates {
+        grid-template-columns: 1fr;
+      }
+
+      .preset-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .plan,
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <div class="loading">Loading ATNT...</div>
+  </main>
+
+  <script>
+    const app = document.getElementById("app");
+    const resourceName = window.GetParentResourceName ? window.GetParentResourceName() : "yseries";
+    const localPreview = (location.protocol === "file:" || location.search.includes("preview=1")) && !window.GetParentResourceName;
+
+    const preview = {
+      account: {
+        phoneNumber: "555-0100",
+        flexes: 90,
+        balance: 45,
+        dataEnabled: true
+      },
+      config: {
+        providerName: "ATNT",
+        currencyLabel: "$",
+        selfRechargeEnabled: false,
+        packages: [
+          { id: "daily", label: "Daily Flex", flexes: 25, price: 15, description: "Light calls, SMS, and app access." },
+          { id: "plus", label: "Flex Plus", flexes: 90, price: 45, description: "A balanced everyday quota." },
+          { id: "max", label: "Flex Max", flexes: 220, price: 100, description: "Long calls and heavy app usage." }
+        ],
+        rechargePresets: [25, 50, 100, 200],
+        providerPanel: {
+          enabled: true,
+          allowBalanceCharge: true,
+          allowFlexCharge: true,
+          balancePresets: [25, 50, 100, 200],
+          flexPresets: [25, 90, 220]
+        },
+        costs: {
+          callFlexesPerMinute: 1,
+          smsFlexes: 1,
+          balancePerFlex: 1
+        }
+      }
+    };
+
+    let state = {
+      account: null,
+      config: null,
+      nearbyCustomers: [],
+      busy: false
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function money(value) {
+      const label = state.config?.currencyLabel || "$";
+      return `${label}${Number(value || 0).toFixed(2)}`;
+    }
+
+    function previewResponse(eventName, data) {
+      if (eventName === "atnt:get-dashboard") {
+        return { success: true, account: preview.account, config: preview.config };
+      }
+
+      if (eventName === "atnt:set-data-enabled") {
+        preview.account.dataEnabled = data.enabled === true;
+        return { success: true, account: preview.account };
+      }
+
+      if (eventName === "atnt:purchase-package") {
+        const plan = preview.config.packages.find((item) => item.id === data.packageId);
+        if (!plan || preview.account.balance < plan.price) {
+          return { success: false, account: preview.account, error: "Insufficient balance" };
+        }
+
+        preview.account.balance -= plan.price;
+        preview.account.flexes += plan.flexes;
+        return { success: true, account: preview.account, message: `Purchased ${plan.label}.` };
+      }
+
+      if (eventName === "atnt:top-up") {
+        return { success: false, account: preview.account, error: "Recharge is disabled" };
+      }
+
+      if (eventName === "atnt:provider-charge") {
+        return {
+          success: true,
+          account: preview.account,
+          targetAccount: {
+            phoneNumber: data.phoneNumber,
+            flexes: Number(data.flexes || 0),
+            balance: Number(data.balance || data.amount || 0)
+          },
+          message: `Charged ${data.phoneNumber || "customer"}.`
+        };
+      }
+
+      if (eventName === "atnt:get-nearby-customers") {
+        return {
+          success: true,
+          customers: [
+            { source: 12, name: "Mina Carter", phoneNumber: "555-0199" },
+            { source: 18, name: "Nour Adams", phoneNumber: "555-0230" }
+          ]
+        };
+      }
+
+      return {};
+    }
+
+    function fetchNui(eventName, data) {
+      if (localPreview) {
+        return Promise.resolve(previewResponse(eventName, data || {}));
+      }
+
+      return fetch(`https://${resourceName}/${eventName}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify(data || {})
+      }).then((response) => response.json());
+    }
+
+    function setBusy(toggle) {
+      state.busy = toggle;
+      document.querySelectorAll("button").forEach((button) => {
+        button.disabled = toggle;
+      });
+    }
+
+    function showNotice(message, isError) {
+      const notice = document.getElementById("notice");
+      if (!notice) return;
+      notice.textContent = message || "";
+      notice.classList.toggle("show", Boolean(message));
+      notice.classList.toggle("error", Boolean(isError));
+    }
+
+    function renderPlans(config) {
+      return (config.packages || []).map((plan) => `
+        <article class="plan">
+          <div>
+            <h3>${escapeHtml(plan.label)}</h3>
+            <p>${escapeHtml(plan.description)}</p>
+            <div class="price">${Number(plan.flexes || 0)} Flexes - ${money(plan.price)}</div>
+          </div>
+          <button class="primary" data-buy="${escapeHtml(plan.id)}">Buy</button>
+        </article>
+      `).join("");
+    }
+
+    function renderSelfRecharge(config) {
+      if (config.selfRechargeEnabled === false) {
+        return `
+          <section class="section">
+            <div class="section-title">
+              <h2>Recharge</h2>
+              <span>Provider only</span>
+            </div>
+            <div class="panel passive">
+              <span>Balance top-ups are handled by ATNT staff.</span>
+              <span class="badge">Locked</span>
+            </div>
+          </section>
+        `;
+      }
+
+      const presets = (config.rechargePresets || []).map((amount) => `
+        <button class="ghost" data-topup="${Number(amount)}">${money(amount)}</button>
+      `).join("");
+
+      return `
+        <section class="section">
+          <div class="section-title">
+            <h2>Recharge</h2>
+            <span>Balance top-up</span>
+          </div>
+          <div class="panel">
+            <div class="preset-row">${presets}</div>
+            <div class="input-row">
+              <input id="customTopup" inputmode="decimal" placeholder="Amount or voucher code">
+              <button class="primary" id="customTopupBtn">Add</button>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderNearbyCustomers() {
+      if (!state.nearbyCustomers.length) {
+        return '<div class="customer-empty">No nearby customers loaded.</div>';
+      }
+
+      return state.nearbyCustomers.map((customer) => `
+        <button class="customer" data-customer-number="${escapeHtml(customer.phoneNumber)}">
+          <strong>${escapeHtml(customer.name || "Nearby customer")}</strong>
+          <span>${escapeHtml(customer.phoneNumber)}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderProviderPanel(config) {
+      const panel = config.providerPanel || {};
+      if (!panel.enabled) return "";
+
+      const balancePresets = (panel.balancePresets || []).map((amount) => `
+        <button class="ghost" data-provider-balance="${Number(amount)}">+${money(amount)}</button>
+      `).join("");
+
+      const flexPresets = (panel.flexPresets || []).map((amount) => `
+        <button class="ghost" data-provider-flexes="${Number(amount)}">+${Number(amount)} Flex</button>
+      `).join("");
+
+      const balanceGroup = panel.allowBalanceCharge === false ? "" : `
+        <div class="charge-group">
+          <header>
+            <span>Balance</span>
+            <span>${escapeHtml(config.currencyLabel || "$")}</span>
+          </header>
+          <div class="preset-row">${balancePresets}</div>
+          <div class="input-row">
+            <input id="providerBalance" inputmode="decimal" placeholder="Balance amount">
+            <button class="primary" id="providerBalanceBtn">Charge</button>
+          </div>
+        </div>
+      `;
+
+      const flexGroup = panel.allowFlexCharge === false ? "" : `
+        <div class="charge-group">
+          <header>
+            <span>Flexes</span>
+            <span>Quota</span>
+          </header>
+          <div class="preset-row">${flexPresets}</div>
+          <div class="input-row">
+            <input id="providerFlexes" inputmode="numeric" placeholder="Flex amount">
+            <button class="primary" id="providerFlexBtn">Charge</button>
+          </div>
+        </div>
+      `;
+
+      return `
+        <section class="section">
+          <div class="section-title">
+            <h2>Provider</h2>
+            <span>Staff panel</span>
+          </div>
+          <div class="panel">
+            <label class="field">
+              <span>Customer number</span>
+              <input id="providerPhone" inputmode="tel" placeholder="Phone number">
+            </label>
+            <div class="customer-tools">
+              <button class="ghost" id="loadNearbyCustomers">Nearby players</button>
+              <span>Tap a customer to fill the number</span>
+            </div>
+            <div class="customer-list" id="nearbyCustomers">
+              ${renderNearbyCustomers()}
+            </div>
+            ${balanceGroup}
+            ${flexGroup}
+          </div>
+        </section>
+      `;
+    }
+
+    function render() {
+      const account = state.account;
+      const config = state.config;
+
+      if (!account || !config) {
+        app.innerHTML = '<div class="loading">Loading ATNT...</div>';
+        return;
+      }
+
+      const serviceOnline = account.dataEnabled && (account.flexes > 0 || account.balance > 0);
+
+      app.innerHTML = `
+        <header class="topbar">
+          <div class="brand">
+            <div class="mark">AT</div>
+            <div>
+              <h1>${escapeHtml(config.providerName || "ATNT")}</h1>
+              <p>Mobile service</p>
+            </div>
+          </div>
+          <div class="status" style="color:${serviceOnline ? "var(--ok)" : "var(--warn)"}">
+            <span class="dot"></span>
+            ${serviceOnline ? "Online" : "Offline"}
+          </div>
+        </header>
+
+        <section class="hero">
+          <div class="metrics">
+            <div class="metric">
+              <span>Flexes</span>
+              <strong>${Number(account.flexes || 0)}</strong>
+            </div>
+            <div class="metric">
+              <span>Balance</span>
+              <strong>${money(account.balance)}</strong>
+            </div>
+          </div>
+          <div class="hero-footer">
+            <span class="phone-number">${escapeHtml(account.phoneNumber || "No number")}</span>
+            <button class="switch" data-data-toggle="${account.dataEnabled ? "0" : "1"}">
+              Data ${account.dataEnabled ? "On" : "Off"}
+              <span class="knob"></span>
+            </button>
+          </div>
+        </section>
+
+        <div class="notice" id="notice"></div>
+
+        <section class="section">
+          <div class="section-title">
+            <h2>Quota Packs</h2>
+            <span>Pay from balance</span>
+          </div>
+          <div class="plans">${renderPlans(config)}</div>
+        </section>
+
+        ${renderSelfRecharge(config)}
+        ${renderProviderPanel(config)}
+
+        <section class="section">
+          <div class="section-title">
+            <h2>Rates</h2>
+            <span>Configurable</span>
+          </div>
+          <div class="rates">
+            <div class="rate"><strong>${Number(config.costs?.callFlexesPerMinute ?? 1)}</strong><span>Flex/min</span></div>
+            <div class="rate"><strong>${Number(config.costs?.smsFlexes ?? 1)}</strong><span>Flex/SMS</span></div>
+            <div class="rate"><strong>${money(config.costs?.balancePerFlex ?? 1)}</strong><span>per Flex</span></div>
+          </div>
+        </section>
+      `;
+
+      bindEvents();
+    }
+
+    function bindInputFocus() {
+      document.querySelectorAll("input").forEach((input) => {
+        input.addEventListener("focus", () => fetchNui("atnt:toggle-focus", false));
+        input.addEventListener("blur", () => fetchNui("atnt:toggle-focus", true));
+      });
+    }
+
+    function providerPhone() {
+      const input = document.getElementById("providerPhone");
+      return input ? input.value.trim() : "";
+    }
+
+    function bindEvents() {
+      bindInputFocus();
+
+      document.querySelectorAll("[data-buy]").forEach((button) => {
+        button.addEventListener("click", () => buyPackage(button.dataset.buy));
+      });
+
+      document.querySelectorAll("[data-topup]").forEach((button) => {
+        button.addEventListener("click", () => topUp({ amount: Number(button.dataset.topup) }));
+      });
+
+      const customTopup = document.getElementById("customTopup");
+      const customTopupBtn = document.getElementById("customTopupBtn");
+
+      if (customTopupBtn && customTopup) {
+        customTopupBtn.addEventListener("click", () => {
+          const value = customTopup.value.trim();
+          const amount = Number(value);
+          topUp(Number.isFinite(amount) && amount > 0 ? { amount } : { code: value });
+        });
+      }
+
+      const loadNearbyCustomers = document.getElementById("loadNearbyCustomers");
+      if (loadNearbyCustomers) {
+        loadNearbyCustomers.addEventListener("click", loadNearbyCustomerList);
+      }
+
+      document.querySelectorAll("[data-customer-number]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const providerPhoneInput = document.getElementById("providerPhone");
+          if (providerPhoneInput) {
+            providerPhoneInput.value = button.dataset.customerNumber || "";
+          }
+        });
+      });
+
+      document.querySelectorAll("[data-provider-balance]").forEach((button) => {
+        button.addEventListener("click", () => {
+          providerCharge({
+            phoneNumber: providerPhone(),
+            balance: Number(button.dataset.providerBalance)
+          });
+        });
+      });
+
+      document.querySelectorAll("[data-provider-flexes]").forEach((button) => {
+        button.addEventListener("click", () => {
+          providerCharge({
+            phoneNumber: providerPhone(),
+            flexes: Number(button.dataset.providerFlexes)
+          });
+        });
+      });
+
+      const providerBalance = document.getElementById("providerBalance");
+      const providerBalanceBtn = document.getElementById("providerBalanceBtn");
+      if (providerBalance && providerBalanceBtn) {
+        providerBalanceBtn.addEventListener("click", () => {
+          providerCharge({
+            phoneNumber: providerPhone(),
+            balance: Number(providerBalance.value)
+          });
+        });
+      }
+
+      const providerFlexes = document.getElementById("providerFlexes");
+      const providerFlexBtn = document.getElementById("providerFlexBtn");
+      if (providerFlexes && providerFlexBtn) {
+        providerFlexBtn.addEventListener("click", () => {
+          providerCharge({
+            phoneNumber: providerPhone(),
+            flexes: Number(providerFlexes.value)
+          });
+        });
+      }
+
+      document.querySelectorAll("[data-data-toggle]").forEach((button) => {
+        button.addEventListener("click", () => toggleData(button.dataset.dataToggle === "1"));
+      });
+    }
+
+    function applyResponse(response) {
+      if (response?.account) {
+        state.account = response.account;
+      }
+
+      if (response?.config) {
+        state.config = response.config;
+      }
+
+      render();
+      showNotice(response?.message || response?.error || "", !response?.success);
+    }
+
+    function buyPackage(packageId) {
+      setBusy(true);
+      fetchNui("atnt:purchase-package", { packageId })
+        .then(applyResponse)
+        .catch((error) => showNotice(error.message, true))
+        .finally(() => setBusy(false));
+    }
+
+    function topUp(payload) {
+      setBusy(true);
+      fetchNui("atnt:top-up", payload)
+        .then(applyResponse)
+        .catch((error) => showNotice(error.message, true))
+        .finally(() => setBusy(false));
+    }
+
+    function providerCharge(payload) {
+      if (!payload.phoneNumber) {
+        showNotice("Enter a customer phone number.", true);
+        return;
+      }
+
+      if (!(Number(payload.balance) > 0) && !(Number(payload.flexes) > 0)) {
+        showNotice("Enter an amount to charge.", true);
+        return;
+      }
+
+      setBusy(true);
+      fetchNui("atnt:provider-charge", payload)
+        .then(applyResponse)
+        .catch((error) => showNotice(error.message, true))
+        .finally(() => setBusy(false));
+    }
+
+    function loadNearbyCustomerList() {
+      setBusy(true);
+      fetchNui("atnt:get-nearby-customers")
+        .then((response) => {
+          if (response?.success) {
+            state.nearbyCustomers = response.customers || [];
+            render();
+            showNotice(
+              state.nearbyCustomers.length
+                ? `Loaded ${state.nearbyCustomers.length} nearby customer${state.nearbyCustomers.length === 1 ? "" : "s"}.`
+                : "No nearby customers with phones found.",
+              false
+            );
+            return;
+          }
+
+          showNotice(response?.error || "Could not load nearby customers.", true);
+        })
+        .catch((error) => showNotice(error.message, true))
+        .finally(() => setBusy(false));
+    }
+
+    function toggleData(enabled) {
+      setBusy(true);
+      fetchNui("atnt:set-data-enabled", { enabled })
+        .then(applyResponse)
+        .catch((error) => showNotice(error.message, true))
+        .finally(() => setBusy(false));
+    }
+
+    window.addEventListener("message", (event) => {
+      const data = event.data;
+      if (data?.type === "dashboard") {
+        if (data.account) {
+          state.account = data.account;
+        }
+
+        if (data.config) {
+          state.config = data.config;
+        }
+
+        render();
+        return;
+      }
+
+      if (data?.type === "account" && data.account) {
+        state.account = data.account;
+        render();
+      }
+    });
+
+    fetchNui("atnt:get-dashboard")
+      .then((response) => {
+        if (!response?.success) {
+          app.innerHTML = `<div class="loading">${escapeHtml(response?.error || "ATNT unavailable")}</div>`;
+          return;
+        }
+
+        state.account = response.account;
+        state.config = response.config;
+        render();
+      })
+      .catch((error) => {
+        app.innerHTML = `<div class="loading">${escapeHtml(error.message)}</div>`;
+      });
+  </script>
+</body>
+</html>
